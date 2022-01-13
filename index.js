@@ -9,7 +9,30 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const flash = require('express-flash');
 const MongoDbStore = require('connect-mongo');
+const passport = require('passport');
 
+
+
+//Database stuff
+mongoose.connect(process.env.MONGO_URL, 
+    {
+        useNewUrlParser: true, 
+        useUnifiedTopology: true,
+        // useFindAndModify : true
+    })
+    .then(() => {
+        console.log("DB Connected")
+    })
+    .catch(e => {console.log("Error Occur");console.log(e);});
+    
+
+app.use(expresslayouts);
+app.set('views',path.join(__dirname,'/resources/views'))
+app.set('view engine','ejs');
+//Assets
+app.use(express.static('public'))
+app.use(express.urlencoded({ extended: false }))
+app.use(express.json());
 
 
 //session config
@@ -22,41 +45,25 @@ app.use(session({
     collectionName: 'session'
 }))
 
+
+//Passport Congig
+const passportInit = require('./Backend/config/passport')
+passportInit(passport)
+app.use(passport.initialize())
+app.use(passport.session())
 //set Template engine
-app.use(expresslayouts);
-app.set('views',path.join(__dirname,'/resources/views'))
-app.set('view engine','ejs');
-
-
 app.use(flash())
-
-//Assets
-app.use(express.static('public'))
-app.use(express.json());
 
 
 //Global middleware
 app.use((req,res,next)=>{
-    res.locals.session = req.session
+    res.locals.session = req.session;
+    res.locals.user = req.user;
     next();
 })
 
-//Database stuff
-mongoose.connect(process.env.MONGO_URL, 
-{
-    useNewUrlParser: true, 
-    useUnifiedTopology: true,
-    // useFindAndModify : true
-})
-.then(() => {
-    console.log("DB Connected")
-})
-.catch(e => {console.log("Error Occur");console.log(e);});
-
 //DB Seeded
 // seedmenu();
-
-
 
 //web routes
 require('./routes/web')(app)

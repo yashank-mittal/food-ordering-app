@@ -5,12 +5,14 @@ const cartControllers = require('../Backend/http/controllers/customer/cartContro
 
 function initRoutes(app){
     app.get('/',homeController().index)
-
-    app.get('/cart',cartControllers().cart);
     
     app.get('/login',authController().login)
     
     app.get('/register',authController().register)
+
+    app.get('/cart',cartControllers().cart);
+
+    app.post('/update-cart', cartControllers().update)
  }
 
 

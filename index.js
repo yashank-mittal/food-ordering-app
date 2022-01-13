@@ -6,9 +6,21 @@ const expresslayouts = require('express-ejs-layouts');
 const path = require('path');
 const seedmenu = require('./seedmenu')
 const mongoose = require('mongoose');
-const sessions = require('express-session');
+const session = require('express-session');
 const flash = require('express-flash');
 const MongoDbStore = require('connect-mongo');
+
+
+
+//session config
+app.use(session({
+    secret: process.env.SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookies: {maxAge: 1000 * 60 * 60 *24}, //24 hours
+    store: MongoDbStore.create({mongoUrl: process.env.MONGO_URL}),
+    collectionName: 'session'
+}))
 
 //set Template engine
 app.use(expresslayouts);
@@ -20,7 +32,14 @@ app.use(flash())
 
 //Assets
 app.use(express.static('public'))
+app.use(express.json());
 
+
+//Global middleware
+app.use((req,res,next)=>{
+    res.locals.session = req.session
+    next();
+})
 
 //Database stuff
 mongoose.connect(process.env.MONGO_URL, 
@@ -37,15 +56,7 @@ mongoose.connect(process.env.MONGO_URL,
 //DB Seeded
 // seedmenu();
 
-//session config
-app.use(sessions({
-    secret: process.env.SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookies: {maxAge: 1000 * 60 * 60 *24}, //24 hours
-    store: MongoDbStore.create({mongoUrl: process.env.MONGO_URL}),
-    collectionName: 'sessions'
-}))
+
 
 //web routes
 require('./routes/web')(app)

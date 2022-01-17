@@ -2,6 +2,9 @@ const homeController = require('../Backend/http/controllers/homeController');
 const authController = require('../Backend/http/controllers/authController');
 const cartControllers = require('../Backend/http/controllers/customer/cartControllers');
 const guest = require('../Backend/http/middelwares/guest')
+const auth = require('../Backend/http/middelwares/auth')
+const orderContoller = require('../Backend/http/controllers/customer/orderController');
+
 
 function initRoutes(app){
     app.get('/',homeController().index)
@@ -18,7 +21,13 @@ function initRoutes(app){
 
     app.get('/cart',cartControllers().cart);
 
-    app.post('/update-cart', cartControllers().update)
+    app.post('/update-cart', cartControllers().update);
+
+    //Customer routes
+
+    app.post('/orders',auth,orderContoller().store);
+
+    app.get('/customer/orders',auth,orderContoller().index);
  }
 
 

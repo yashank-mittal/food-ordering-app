@@ -349,3 +349,10 @@ section.login a:hover {
   border-radius: 50px !important;
   padding-left: 8px !important;
 }
+
+a.link {
+  color: #ee581c;
+}
+a.link:hover {
+  color: #c44d1e;
+}

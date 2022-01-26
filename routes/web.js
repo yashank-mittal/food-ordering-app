@@ -3,7 +3,7 @@ const authController = require('../Backend/http/controllers/authController');
 const cartControllers = require('../Backend/http/controllers/customer/cartControllers');
 const orderContoller = require('../Backend/http/controllers/customer/orderController');
 const AdminOrderContoller = require('../Backend/http/controllers/admin/orderController');
-
+const statusController = require('../Backend/http/controllers/admin/statusController');
 
 //Middleware
 const guest = require('../Backend/http/middelwares/guest')
@@ -30,12 +30,13 @@ function initRoutes(app){
 
     //Customer routes
     app.post('/orders',auth,orderContoller().store);
-
     app.get('/customer/orders',auth,orderContoller().index);
+    app.get('/customer/orders/:id',auth,orderContoller().show);
 
     //Admin routes
 
     app.get('/admin/orders',Admin,AdminOrderContoller().index);
+    app.post('/admin/order/status',Admin,statusController().update);
  }
 
 

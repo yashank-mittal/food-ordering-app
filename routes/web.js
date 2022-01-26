@@ -1,9 +1,14 @@
 const homeController = require('../Backend/http/controllers/homeController');
 const authController = require('../Backend/http/controllers/authController');
 const cartControllers = require('../Backend/http/controllers/customer/cartControllers');
+const orderContoller = require('../Backend/http/controllers/customer/orderController');
+const AdminOrderContoller = require('../Backend/http/controllers/admin/orderController');
+
+
+//Middleware
 const guest = require('../Backend/http/middelwares/guest')
 const auth = require('../Backend/http/middelwares/auth')
-const orderContoller = require('../Backend/http/controllers/customer/orderController');
+const Admin = require('../Backend/http/middelwares/admin');
 
 
 function initRoutes(app){
@@ -24,10 +29,13 @@ function initRoutes(app){
     app.post('/update-cart', cartControllers().update);
 
     //Customer routes
-
     app.post('/orders',auth,orderContoller().store);
 
     app.get('/customer/orders',auth,orderContoller().index);
+
+    //Admin routes
+
+    app.get('/admin/orders',Admin,AdminOrderContoller().index);
  }
 
 

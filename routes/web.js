@@ -17,11 +17,11 @@ function initRoutes(app){
     app.get('/login',guest,authController().login)
 
 
-    app.post('/login',authController().postlogin)
+    app.post('/login',authController().postLogin)
     
     app.get('/register',guest,authController().register)
 
-    app.post('/register',authController().postregister);
+    app.post('/register',authController().postRegister);
     app.post('/logout',authController().logout);
 
     app.get('/cart',cartControllers().cart);

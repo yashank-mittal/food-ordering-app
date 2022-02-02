@@ -21,12 +21,13 @@ function orderContoller(){
             order.save().then(result=>{
                 Order.populate(result,{ path: 'customerId' },(err,placedOrder)=>{
                     // console.log(result);
-                    req.flash('success','Order Placed successfully');
+                    // req.flash('success','Order Placed successfully');
                     delete req.session.cart;
                     // Emit 
                     const eventEmitter = req.app.get('eventEmitter');
                     eventEmitter.emit('orderPlaced',placedOrder)
-                    return res.redirect('/customer/orders');
+                    return res.json({ message:'Order Placed successfully' });
+                    // return res.redirect('/customer/orders');
                 })
             }).catch(e => {
                 req.flash('error','Something went wrong')

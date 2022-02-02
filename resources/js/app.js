@@ -76,6 +76,48 @@ function updateStatus(order) {
 
 updateStatus(order);
 
+
+//Ajax Call
+
+const paymentForm = document.querySelector('#payment-form');
+if(paymentForm){
+    paymentForm.addEventListener('submit',(e)=>{
+        e.preventDefault();
+        let formdata = new FormData(paymentForm);
+        let formObject = {};
+        for(let [key,value] of formdata.entries()){
+            formObject[key] = value;
+            // console.log(key,value);
+        }
+        axios.post('/orders',formObject).then((res)=>{
+            // console.log(res.data);
+            new Noty({
+                type: 'success',
+                timeout: 1000,
+                text: res.data.message,
+                progressBar: false
+              }).show();
+
+              setTimeout(()=>{
+                  window.location.href = '/customer/orders';
+              },1000)
+
+        }).catch((e)=>{
+            new Noty({
+                type: 'error',
+                timeout: 1000,
+                text: e.res.data.message,
+                progressBar: false
+              }).show();
+            console.log(e)
+        })
+        console.log(formObject)
+        // console.log(formdata.entries)
+        // console.log(e);
+    })
+}
+
+
 // Socket
 let socket = io()
 
